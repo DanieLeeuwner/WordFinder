@@ -15,6 +15,8 @@ namespace WordFinder
 
     private static string selected_word;
 
+    private static bool displaying_dictionary = false;
+
     private static void Main(string[] args)
     {
       if (!File.Exists(word_file))
@@ -32,7 +34,7 @@ namespace WordFinder
       while (true)
       {
         var input = Console.ReadKey();
-
+        
         if (input.Key == ConsoleKey.Backspace)
         {
           if (needle.Length > 0)
@@ -46,6 +48,8 @@ namespace WordFinder
           Console.Write("Selected Word: ");
           PrintColor(ConsoleColor.Green, selected_word + '\n');
           Console.WriteLine("-----------------------------------");
+
+          displaying_dictionary = true;
 
           // find the meaning of the word
           if (File.Exists(dictionary_file))
@@ -82,9 +86,18 @@ namespace WordFinder
 
           continue;
         }
+        else if (input.Key == ConsoleKey.Escape)
+        {
+          if (displaying_dictionary == false)
+          {
+            Environment.Exit(0);
+          }
+          displaying_dictionary = false;
+        }
         else
         {
           needle += input.KeyChar;
+          displaying_dictionary = false;
         }
         
         var regex = new Regex(needle, RegexOptions.IgnoreCase);
